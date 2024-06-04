@@ -1,19 +1,13 @@
-#define ITEMNULO -1
-#define MAX_LEN 512
+#define NUMLETRA 39
 
-/* Defines para String */
-#define digito(x, b) (x) & (b)
-#define EQ(a, b)     (strcmp((a), (b)) == 0)
-
-typedef char* TipoItem;
 typedef struct NodoTrie* ApNodo;
 typedef struct NodoTrie {
-    TipoItem item;
-    ApNodo esq, dir;
+    ApNodo prox[NUMLETRA];
 } NodoTrie;
 
-ApNodo criaArvTrie(void);
-void freeArvTrie(ApNodo);
-ApNodo buscaTrie(TipoItem, ApNodo);
-ApNodo insereTrie(TipoItem, ApNodo);
-ApNodo removeTrie(TipoItem, ApNodo);
+typedef char* TipoItem;
+
+void criaArvTrie( ApNodo* );
+void freeArvTrie( ApNodo );
+ApNodo buscaTrie( TipoItem, ApNodo );
+ApNodo insereTrie( TipoItem, ApNodo );
