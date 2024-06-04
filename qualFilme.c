@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include "trie.h"
 
+#define MAX_BUF 1024
+
 int main(int argc, char* argv[])
 {
    if (argc != 2){ 
@@ -19,16 +21,45 @@ int main(int argc, char* argv[])
       exit(2);
    }
 
-   // Leitura dos títulos dos filmes
-   char buffer[1024];
+   // Criação estrutura Trie
+   ApNodo arv;
+   criaArvTrie(&arv);
 
+   // Leitura dos títulos dos filmes para a Trie
+   char buffer[MAX_BUF];
    printf("Nome do arquivo: %s\n", listaFilmes);
 
-   do {
-      fgets(buffer, 1024, stdin);
-      printf("Comando - %s\n", buffer);
-   } while (strcmp(buffer, "\n"));
+   while (fgets(buffer, MAX_BUF, filmes) != NULL){
+      for (int i = 0; i < MAX_BUF; i++)
+         if (buffer[i] == '\n') buffer[i] = '\0';
+      insereTrie(buffer, arv);
+   }
 
+   // Leitura e execução dos comandos do programa
+   char c;
+   while (fgets(buffer, MAX_BUF, stdin) != NULL){
+      for (int i = 0; i < MAX_BUF; i++)
+         if (buffer[i] == '\n') buffer[i] = '\0';
+      c = buffer[0];
+      switch(c){
+         case 'p':
+            break;
+         case 'l':
+            break;
+         case 'c':
+            break;
+         default:
+            break;
+      }
+   }
+
+   // Teste da busca
+   char* teste = strdup("just another christmas");
+   if (buscaTrie(teste, arv)) printf("O nome esta na lista\n");
+   else printf("Nao esta na lista\n");
+   free(teste);
+
+   freeArvTrie(arv);
    free(listaFilmes);
    fclose(filmes);
    return 0;

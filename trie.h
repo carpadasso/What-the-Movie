@@ -1,3 +1,6 @@
+#ifndef __TRIE__
+#define __TRIE__
+
 #define NUMLETRA 39
 
 typedef struct NodoTrie* ApNodo;
@@ -11,3 +14,5 @@ void criaArvTrie( ApNodo* );
 void freeArvTrie( ApNodo );
 ApNodo buscaTrie( TipoItem, ApNodo );
 ApNodo insereTrie( TipoItem, ApNodo );
+
+#endif

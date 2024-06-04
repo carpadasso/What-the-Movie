@@ -1,10 +1,26 @@
-all: qualFilme
+# Makefile do projeto Qual o Filme
+# Curitiba, Paraná - Junho, 2023
 
-qualFilme: trie.o qualFilme.o
-	gcc -Wall -Wextra qualFilme.o trie.o -o qualFilme
+# Nome do Projeto
+PROJ_NAME=qualFilme
+# Arquivos .c
+C_SOURCE=$(wildcard *.c)
+# Arquivos .h
+H_SOURCE=$(wildcard *.h)
+# Objetos
+OBJ=$(C_SOURCE:.c=.o)
+# Compilador
+CC=gcc
+# Flags do Compilador
+CC_FLAGS=-c -Wall -O2
 
-qualFilme.o: qualFilme.c
-	gcc -Wall -Wextra qualFilme.c trie.c -o qualFilme.o
+all: $(PROJ_NAME)
 
-trie.o: trie.c
-	gcc -Wall -Wextra 
+$(PROJ_NAME): $(OBJ)
+	$(CC) -o $@ $^
+
+%.o: %.c %.h
+	$(CC) -o $@ $< $(CC_FLAGS)
+
+clean:
+	rm -rf *.o $(PROJ_NAME) *~
