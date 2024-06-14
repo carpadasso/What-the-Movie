@@ -87,7 +87,10 @@ void procuraPrefixo(ArvTrie arv, char* prefixo)
    ApNodo posPrefixo = buscaTrie(arv, prefixo, "p");
 
    if (posPrefixo == NULL) return;
-   imprimePrefixo(posPrefixo, prefixo);
+   char* copiaPrefixo = (char*) malloc(MAX_BUF * sizeof(char));
+   strcpy(copiaPrefixo, prefixo);
+   imprimePrefixo(posPrefixo, copiaPrefixo);
+   free(copiaPrefixo);
 }
 
 // Opção 02 - Maior Prefixo
