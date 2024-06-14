@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
 
    // Leitura e execução dos comandos do programa
    char c;
-   char *comando;
+   char *comando, *resultado;
    while (fgets(buffer, MAX_BUF, stdin) != NULL){
       // Impressão do comando executado
       printf("%s", buffer);
@@ -159,7 +159,9 @@ int main(int argc, char* argv[])
             procuraPrefixo(arv, comando);
             break;
          case 'l':
-            printf("%s\n", procuraMaiorPrefixo(arv, comando));
+            resultado = procuraMaiorPrefixo(arv, comando);
+            printf("%s\n", resultado);
+            free(resultado);
             break;
          case 'c':
             break;
