@@ -1,8 +1,2 @@
 p Rocky
 l New York Minute Madness
-c 19..
-c 1*
-c *christmas*
-c Christmas*.
-c *New
-c *four *funeral

@@ -146,27 +146,30 @@ int main(int argc, char* argv[])
    if (teste != NULL) printf("Buscou certo!\n");
 
    // Leitura e execução dos comandos do programa
-   /*
    char c;
+   char *comando;
    while (fgets(buffer, MAX_BUF, stdin) != NULL){
-      for (int i = 0; i < MAX_BUF; i++)
-         if (buffer[i] == '\n') buffer[i] = '\0';
+      // Impressão do comando executado
+      printf("%s", buffer);
+      // Executa o comando dado
       c = buffer[0];
+      comando = padronizaString(&buffer[2]);
       switch(c){
          case 'p':
-            procuraPrefixo(arv, &buffer[2]);
+            procuraPrefixo(arv, comando);
             break;
          case 'l':
-            //achaMaiorPrefixo(arv, &buffer[2]);
+            printf("%s\n", procuraMaiorPrefixo(arv, comando));
             break;
          case 'c':
             break;
          default:
             break;
       }
+      free(comando);
    }
-   */
 
+   /*
   // Opção 1 - Prefixo
    char prfx1[MAX_BUF] = "f";
    procuraPrefixo(arv, prfx1);
@@ -176,6 +179,7 @@ int main(int argc, char* argv[])
    char *maxPref = procuraMaiorPrefixo(arv, prfx2);
    printf("%s\n", maxPref);
    free(maxPref);
+   */
 
    freeArvTrie(arv);
    free(listaFilmes);
