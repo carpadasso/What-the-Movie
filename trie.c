@@ -8,20 +8,18 @@ const char nodoRef[NUMLETRA] = { '\0', ' ', '0', '1', '2', '3', '4', '5', '6', '
                                  '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 
                                  'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
                                  's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '?' };
+
 /* ------------------------
-        Funções Auxiliares
+        Funções da Interface
    ------------------------ */
-int indC(char c)
+int indiceNodo(char c)
 {
     for (int i = 0; i < NUMLETRA; i++)
         if (nodoRef[i] == c) return i;
     return -1;
 }
 
-/* ------------------------
-        Funções da Interface
-   ------------------------ */
-int caractereNodo(int indice)
+char caractereNodo(int indice)
 {
     return nodoRef[indice];
 }
@@ -51,7 +49,7 @@ void freeArvTrie(ArvTrie arv)
 ApNodo buscaTrieTitulo(ArvTrie arv, TipoItem val, int indStr)
 {
     // Posição do caractere no nodo
-    int indChar = indC(val[indStr]);
+    int indChar = indiceNodo(val[indStr]);
 
     if (arv == NULL)
         // Não achou o caractere nulo ('\0')
@@ -70,7 +68,7 @@ ApNodo buscaTriePrefixo(ArvTrie arv, TipoItem val, int indStr)
 {
     if (arv == NULL) return NULL; // Teste de Sanidade
 
-    int indChar = indC(val[indStr]); // Posição do caractere no nodo
+    int indChar = indiceNodo(val[indStr]); // Posição do caractere no nodo
     if (indChar == -1) return NULL; // Caractere fora da sequência
 
     if (val[indStr] == '\0')
@@ -109,7 +107,7 @@ TipoItem insereTrieR(ArvTrie arv, TipoItem val, int indStr)
 {
     if (arv == NULL) return NULL; // Teste de Sanidade
 
-    int indChar = indC(val[indStr]); // Posição do caractere no nodo
+    int indChar = indiceNodo(val[indStr]); // Posição do caractere no nodo
     if (indChar == -1) return NULL; // Caractere fora da sequência
 
     // Confere o caractere lido

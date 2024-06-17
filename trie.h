@@ -11,7 +11,8 @@ typedef struct NodoTrie {
     ApNodo prox[NUMLETRA];
 } NodoTrie;
 
-int caractereNodo( int indice );
+int indiceNodo( char c );
+char caractereNodo( int indice );
 void criaArvTrie( ArvTrie* arv );
 void freeArvTrie( ArvTrie arv );
 ApNodo buscaTrie( ArvTrie arv, TipoItem str, const char* opt );
