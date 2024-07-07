@@ -1,17 +1,19 @@
 /* Includes */
 #include <stdlib.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include "trie.h"
 
-const char nodoRef[NUMLETRA] = { '\0', ' ', '0', '1', '2', '3', '4', '5', '6', '7',
-                                 '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 
-                                 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
-                                 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '?' };
+#define MAX_BUF 1024
 
-/* ------------------------
-        Funções da Interface
-   ------------------------ */
+const char nodoRef[NUMLETRA] = 
+{ 
+    '\0', ' ', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c',
+    'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+    's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '?'
+};
+
 int indiceNodo(char c)
 {
     for (int i = 0; i < NUMLETRA; i++)
@@ -24,6 +26,9 @@ char caractereNodo(int indice)
     return nodoRef[indice];
 }
 
+/* ------------------------
+     Funções da Interface
+   ------------------------ */
 void criaArvTrie(ArvTrie* arv)
 {
     if (arv == NULL) return;
@@ -133,7 +138,139 @@ TipoItem insereTrie(ArvTrie arv, TipoItem val)
 }
 
 /* ------------------------
-        Teste Biblioteca
+        Busca Avançada
+   ------------------------ */
+/* Opção 01 - Títulos com Prefixo */
+void imprimePrefixo(ArvTrie arv, char* prefixo)
+{
+   int lenStr = strlen(prefixo);
+
+   for (int i = 0; i < NUMLETRA; i++)
+      if (arv->prox[i] != NULL){
+         if (i == 0) printf("%s\n", prefixo);
+         else { 
+            prefixo[lenStr + 1] = '\0';
+            prefixo[lenStr] = caractereNodo(i);
+            imprimePrefixo(arv->prox[i], prefixo);
+         }
+      }
+}
+
+void procuraPrefixo(ArvTrie arv, char* prefixo)
+{
+   ApNodo posPrefixo = buscaTrie(arv, prefixo, "p");
+
+   if (posPrefixo == NULL) return;
+   char* copiaPrefixo = (char*) malloc(MAX_BUF * sizeof(char));
+   strcpy(copiaPrefixo, prefixo);
+   imprimePrefixo(posPrefixo, copiaPrefixo);
+   free(copiaPrefixo);
+}
+
+/* Opção 02 - Maior Prefixo */
+char* procuraMaiorPrefixo(ArvTrie arv, char* str)
+{
+   int lenStr = strlen(str);
+   char *copiaPrefixo = (char*) malloc(MAX_BUF * sizeof(char));
+   char *maiorPrefixo = (char*) malloc(MAX_BUF * sizeof(char));
+
+   maiorPrefixo[0] = '\0';
+   for (int i = 0; i <= lenStr; i++){
+      copiaPrefixo[i + 1] = '\0';
+      copiaPrefixo[i] = str[i];
+      if (buscaTrie(arv, copiaPrefixo, "t") != NULL)
+         strcpy(maiorPrefixo, copiaPrefixo);
+   }
+   free(copiaPrefixo);
+   return maiorPrefixo;
+}
+
+/* Opção 03 - Busca de Padrão Específico */
+bool verificaPadrao(char* padrao, char* titulo)
+{
+   int indP, indT;
+
+   // Teste de Sanidade
+   if (padrao == NULL || titulo == NULL) return false;
+
+   indT = indP = 0;
+   while (padrao[indP] != '\0'){
+      // Caso 01: Caractere == '*'
+      // Função: Pula caractere até achar o próximo caractere
+      // do padrão (padrao[indP + 1]).
+      // Se achou o caractere, recursividade começando o título
+      // no ponto do caractere achado. Se não, retorna falso.
+      // Se o próximo caractere é '.', verifica-se se existe um caractere
+      // a mais após o caractere atual do título (titulo[indT + 1] != '\0')
+      // e se houver, faz a verificação recursiva de cada caractere.
+      if (padrao[indP] == '*'){
+         if (padrao[indP + 1] == '\0')
+            return true;
+         else if (padrao[indP + 1] == '.'){
+            if (padrao[indP + 2] == '\0'){
+               if (titulo[indT] != '\0') return true;
+               return false;
+            }
+            for (int i = indT; titulo[i] != '\0'; i++){
+               if (verificaPadrao(&padrao[indP + 2], &titulo[i]))
+                  return true;
+            }
+            return false;
+         }
+         else {
+            for (int i = indT; titulo[i] != '\0'; i++){
+               if (verificaPadrao(&padrao[indP + 1], &titulo[i]))
+                  return true;
+            }
+            return false;
+         }
+      }
+      // Caso 02: Caractere == '.'
+      // Nesse caso, pula um caractere à frente na comparação
+      else if (padrao[indP] == '.'){ indT++; indP++; }
+      // Caso 03: Caractere == Qualquer caratere 0-9a-z
+      // Se o caractere do título é o mesmo do padrão, continua a verificação
+      // Caso seja diferente, não achou padrão e retorna falso
+      else {
+         if (titulo[indT] == padrao[indP]){ indT++; indP++; }
+         else return false;
+      }
+   }
+   if (titulo[indT] == '\0') return true;
+   return false;
+}
+
+void procuraPadraoR(ArvTrie arv, char* padrao, char* titulo, bool encontrouPadrao)
+{
+   encontrouPadrao = (verificaPadrao(padrao, titulo)) ? true : false;
+   int tamTitulo = strlen(titulo);
+   for (int i = 0; i < NUMLETRA; i++)
+      if (arv->prox[i] != NULL){
+         if (i == 0){
+            if (encontrouPadrao) printf("%s\n", titulo);
+         }
+         else {
+            titulo[tamTitulo + 1] = '\0';
+            titulo[tamTitulo] = caractereNodo(i);
+            procuraPadraoR(arv->prox[i], padrao, titulo, encontrouPadrao);
+         }
+      }
+}
+
+void procuraPadrao(ArvTrie arv, char* padrao)
+{
+   if (arv == NULL || padrao == NULL) return;
+
+   char* titulo = (char*) malloc(MAX_BUF * sizeof(char));
+   titulo[0] = '\0';
+   procuraPadraoR(arv, padrao, titulo, false);
+
+   free(titulo);
+   titulo = NULL;
+}
+
+/* ------------------------
+       Teste Biblioteca
    ------------------------ */
 /*
 int main()

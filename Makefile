@@ -12,15 +12,17 @@ OBJ=$(C_SOURCE:.c=.o)
 # Compilador
 CC=gcc
 # Flags do Compilador
-CC_FLAGS=-c -Wall -O2
+CC_FLAGS=-c -Wall -Wextra -O2
 
+# all: Compila o projeto
 all: $(PROJ_NAME)
 
 $(PROJ_NAME): $(OBJ)
 	$(CC) -o $@ $^
 
-%.o: %.c %.h
-	$(CC) -o $@ $< $(CC_FLAGS)
+%.o: %.c
+	$(CC) $(CC_FLAGS) -o $@ $^
 
+# clean: Remove os arquivos objeto e temporários
 clean:
 	rm -rf *.o $(PROJ_NAME) *~
